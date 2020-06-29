@@ -8,6 +8,8 @@ public class Main {
         reasoning.start();
 
         TeamTC1 teamTC1 = new TeamTC1();
-        teamTC1.run();
+        Thread teamV8 = new Thread(teamTC1);
+        teamV8.setName("Team V8");
+        teamV8.start();
     }
 }
