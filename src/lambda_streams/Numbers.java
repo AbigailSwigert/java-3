@@ -1,6 +1,7 @@
 package lambda_streams;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,18 +12,18 @@ class Numbers {
 
     public static void main(String[] args) {
         //Part I :complete the static class methods that have been set up in this Numbers class java file.  Use streams to compute the results wherever possible.
-//        System.out.println(nums);
-//        System.out.println(isOdd(3));
-//        System.out.println(isEven(13));
-//        System.out.println(isPrime(3));
-//        System.out.println(added(nums));
-//        System.out.println(subtracted(nums));
-//        System.out.println(multiplied(nums));
-//        System.out.println(divided(nums));
-//        System.out.println(findMax(nums));
-//        System.out.println(findMin(nums));
-//        compare(nums);
-        System.out.println(append(2398) + nums.toString());
+        System.out.println(nums);
+        System.out.println(isOdd(3));
+        System.out.println(isEven(13));
+        System.out.println(isPrime(3));
+        System.out.println(added(nums));
+        System.out.println(subtracted(nums));
+        System.out.println(multiplied(nums));
+        System.out.println(divided(nums));
+        System.out.println(findMax(nums));
+        System.out.println(findMin(nums));
+        compare(nums);
+        System.out.println(append(2398));
 
         //Part II - refactor all of the class methods to accept lambda expressions. You can put the lambda functions directly inside the method calls, or define them first, then pass them into the methods. give them the same names as the static methods, but add the word 'lambda' in front of every lambda function:
         /* e.g.
@@ -44,12 +45,102 @@ class Numbers {
 
         */
 
+        Processor<Integer, Boolean> lambdaIsOdd = (Integer i) -> i % 2 != 0;
+        Processor<Integer, Boolean> lambdaIsEven = (Integer i) -> i % 2 == 0;
+        Processor<Integer, Boolean> lambdaIsPrime = (Integer i) -> {
+            boolean result = true;
+            for (int x = 2; x<=sqrt(i); x++) {
+                if ((i % x) == 0) {
+                    result = false;
+                    break;
+                } else {
+                    x++;
+                }
+            }
+            return result;
+        };
+        Processor<List<Integer>, Integer> lambdaAdded = (numbers) -> {
+            int sum = 0;
+            for(int i: numbers){
+                sum += i;
+            }
+            return sum;
+        };
+        Processor<List<Integer>, Integer> lambdaSubtracted = (numbers) -> {
+            int remainder = numbers.get(0);
+            for(int i = 1; i<numbers.size(); i++) {
+                remainder -= numbers.get(i);
+            }
+            return remainder;
+        };
+        Processor<List<Integer>, BigInteger> lambdaMultiplied = (numbers) -> {
+            BigInteger product = BigInteger.valueOf(numbers.get(0));
+            for (int i = 1; i<numbers.size(); i++) {
+                product= product.multiply(BigInteger.valueOf(numbers.get(i)));
+            }
+            return product;
+        };
+        Processor<List<Integer>, Double> lambdaDivided = (numbers) -> {
+            double product = numbers.get(0);
+            for (int i = 1; i<numbers.size(); i++) {
+                product /= numbers.get(i);
+            }
+            return product;
+        };
+        Processor<List<Integer>, Integer> lambdaFindMax = (numbers) -> {
+            int maxValue = Integer.MIN_VALUE;
+            for(int i: numbers) {
+                if(maxValue < i) {
+                    maxValue = i;
+                }
+            }
+            return maxValue;
+        };
+        Processor<List<Integer>, Integer> lambdaFindMin = (numbers) -> {
+            int minValue = Integer.MAX_VALUE;
+            for(int i: numbers) {
+                if (minValue > i) {
+                    minValue = i;
+                }
+            }
+            return minValue;
+        };
+        Processor<List<Integer>, Integer> lambdaCompare = (numbers) -> {
+            int j = 1;
+            int compareValue = 0;
+            for(int i=0; i<numbers.size()-1; i++) {
+                compareValue = Integer.compare(numbers.get(i), numbers.get(j));
+                System.out.println(numbers.get(i) + " compared to " + numbers.get(j) + ": " + compareValue);
+                j++;
+            }
+            return compareValue;
+        };
+        Processor<Integer, Integer> lambdaAppend = (n) -> {
+            ArrayList<Integer> newNums = new ArrayList<Integer>(nums);
+            newNums.add(n);
+            return n;
+        };
+        System.out.println(lambdaIsOdd.process(26));
+        System.out.println(lambdaIsEven.process(26));
+        System.out.println(lambdaIsPrime.process(10));
+        System.out.println(lambdaAdded.process(nums));
+        System.out.println(lambdaSubtracted.process(nums));
+        System.out.println(lambdaMultiplied.process(nums));
+        System.out.println(lambdaDivided.process(nums));
+        System.out.println(lambdaFindMax.process(nums));
+        System.out.println(lambdaFindMin.process(nums));
+        lambdaCompare.process(nums);
+        System.out.println(lambdaAppend.process(986));
+
+    }
+
+    interface Processor<T, R> {
+        R process(T arg);
     }
 
     static boolean isOdd(int i) {
         //determine if the value at the index i is odd.  return true if yes, return false if  no.
         return i % 2 != 0;
-
     }
 
     static boolean isEven(int i) {
@@ -144,7 +235,8 @@ class Numbers {
 
     static int append(int n) {
         //add a new value to the values list. return that value after adding it to the list.
-        nums.add(n);
+        ArrayList<Integer> newNums = new ArrayList<Integer>(nums);
+        newNums.add(n);
         return n;
     }
 
